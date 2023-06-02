@@ -1,0 +1,20 @@
+{
+  "name": "gresearch-solution",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aarontravass/gresearch-solution.git"
+  },
+  "author": "aarontravass",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aarontravass/gresearch-solution/issues"
+  },
+  "homepage": "https://github.com/aarontravass/gresearch-solution#readme"
+}
