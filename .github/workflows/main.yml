@@ -9,7 +9,7 @@ on:
 
 env:
   K8_AVAILABLE: false
-  NUMBER_OF_RECORDS: 10000000
+  NUMBER_OF_RECORDS: 10000
 
 jobs:
   build:
@@ -34,6 +34,10 @@ jobs:
       - name: parse data
         run: npm run start
 
-      - name: run on redis
-        run: docker compose up -d && node ./src/index_redis.js && docker compose down
+      # - name: run on redis
+      #   run: docker compose up -d && node ./src/index_redis.js && docker compose down
+      - name: docker build
+        run: rm ./input.json ./reduced_output.json && docker build -t "ghcr.io/aarontravass/stream-reducer/app:$GITHUB_SHA" .
 
+      - name: docker push
+        run: docker push "ghcr.io/aarontravass/stream-reducer/app:$GITHUB_SHA"
