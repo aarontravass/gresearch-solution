@@ -5,10 +5,11 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 env:
   K8_AVAILABLE: false
-  NUMBER_OF_RECORDS: 1000
+  NUMBER_OF_RECORDS: 100000
 
 jobs:
   build:
