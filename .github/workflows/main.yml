@@ -13,7 +13,7 @@ env:
 
 jobs:
   build:
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-20.04-16core"
     steps:
       - uses: actions/checkout@v3
 
@@ -34,9 +34,6 @@ jobs:
       - name: parse data
         run: npm run start
 
+      - name: run on redis
+        run: docker-compose up && node ./src/index_redis.js && docker-compose down
 
-      
-
-      
-
-  

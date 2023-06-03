@@ -19,14 +19,14 @@ const reduce = (start_object, end_object) => {
 };
 
 async function app() {
-  await client.connect();
-
+  await client.connect().then(() => console.log("connected!"));
+  
   const inputJsonPath = "./input.json";
 
   const pipeline = createReadStream(inputJsonPath).pipe(
     streamjson.withParser()
   );
-
+  console.time("timer");
   let lastobject = null;
   pipeline.on("data", async (chunk) => {
     if (!lastobject) {
@@ -34,12 +34,13 @@ async function app() {
     } else {
       const result = reduce(lastobject, chunk.value);
       lastobject = null;
-      client.hSet(result['session_id'], result);
+      client.hSet("session_id", result['session_id'], JSON.stringify(result));
     }
   });
 
-  pipeline.on("end", async () => {
+  pipeline.on("close", async () => {
     //console.log(data)
+    console.timeEnd("timer");
     await client.quit();
   });
 }

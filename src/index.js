@@ -17,27 +17,6 @@ function Writer() {
   };
 }
 
-const inputJsonPath = "./input.json";
-
-const pipeline = createReadStream(inputJsonPath).pipe(streamjson.withParser());
-const writer = new Writer();
-
-let lastobject = null;
-pipeline.on("data", (chunk) => {
-  if (!lastobject) {
-    lastobject = chunk.value;
-  } else {
-    const result = reduce(lastobject, chunk.value);
-    lastobject = null;
-    writer._write(JSON.stringify(result) + ",\n");
-  }
-});
-
-pipeline.on("end", () => {
-  //console.log(data)
-  writer._close();
-});
-
 const reduce = (start_object, end_object) => {
   const result = {};
   result["session_id"] = start_object.id;
@@ -51,3 +30,30 @@ const reduce = (start_object, end_object) => {
   result["damaged"] = Boolean(end_object.comments).valueOf();
   return result;
 };
+
+function app() {
+  const inputJsonPath = "./input.json";
+
+  const pipeline = createReadStream(inputJsonPath).pipe(
+    streamjson.withParser()
+  );
+  const writer = new Writer();
+  console.time("timer_2");
+  let lastobject = null;
+  pipeline.on("data", (chunk) => {
+    if (!lastobject) {
+      lastobject = chunk.value;
+    } else {
+      const result = reduce(lastobject, chunk.value);
+      lastobject = null;
+      writer._write(JSON.stringify(result) + ",\n");
+    }
+  });
+
+  pipeline.on("close", () => {
+    //console.log(data)
+    console.timeEnd("timer_2");
+    writer._close();
+  });
+}
+app();
