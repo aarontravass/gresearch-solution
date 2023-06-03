@@ -22,6 +22,11 @@ jobs:
         with:
           node-version: 16.x
 
+      # - name: Kubernetes CLI (kubectl)
+      #   uses: tale/kubectl-action@v1
+      #   with:
+      #     base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+
       - name: install dependencies
         run: npm install
 
@@ -46,3 +51,7 @@ jobs:
 
       - name: docker push
         run: docker push "ghcr.io/aarontravass/stream-reducer/app:$GITHUB_SHA"
+
+      # - name: set new image
+      #   run: kubectl set -n aaron image deployment/stream-reducer stream-reducer="ghcr.io/aarontravass/stream-reducer/app:$GITHUB_SHA"
+      
