@@ -29,6 +29,8 @@ Since the available number of rows were not significant enough to produce eviden
 
 To test my code, a [github actions workflow has been set up](https://github.com/aarontravass/gresearch-solution/actions). Some jobs have been commented out due to infrastructure limitations.
 
+Additional comments have been added in `src/index.js`.
+
 ## Experimentation
 In order to measure the memory performance, I used data from [`process.memoryUsage()`](https://nodejs.org/api/process.html#processmemoryusage). In particular, the `heapUsed` parameter is the main value that we need to track since it shows the amount of memory used by variables in the heap.
 
