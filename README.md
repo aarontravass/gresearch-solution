@@ -1,4 +1,4 @@
-# G-Research Challenege Solution
+# G-Research Challenge Solution
 ## Approach
 The naive solution is fairly simple: Read the json file, assemble the resulting json in memory and output it to a file. I instead chose to tackle the large file challenge. This required reading a very large JSON and concurrently writing it to either a file or an in memory database.
 
