@@ -36,6 +36,11 @@ jobs:
 
       # - name: run on redis
       #   run: docker compose up -d && node ./src/index_redis.js && docker compose down
+      - name: docker login
+        env:
+          GHCR_PASSWORD: ${{ secrets.GHCR_PASSWORD }}
+        run: docker logout ghcr.io && docker login ghcr.io -u aarontravass -p "$GHCR_PASSWORD"
+
       - name: docker build
         run: rm ./input.json ./reduced_output.json && docker build -t "ghcr.io/aarontravass/stream-reducer/app:$GITHUB_SHA" .
 
