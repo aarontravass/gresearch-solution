@@ -9,7 +9,7 @@ on:
 
 env:
   K8_AVAILABLE: false
-  NUMBER_OF_RECORDS: 10000000
+  NUMBER_OF_RECORDS: 100000
 
 jobs:
   build:
@@ -33,7 +33,9 @@ jobs:
 
       - name: parse data
         run: npm run start
+      - name: check docker versopn
+        run: docker --version
 
       - name: run on redis
-        run: docker-compose up && node ./src/index_redis.js && docker-compose down
+        run: docker compose up -d && node ./src/index_redis.js && docker compose down
 
