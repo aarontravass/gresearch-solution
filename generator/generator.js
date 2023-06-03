@@ -1,6 +1,6 @@
 import { createWriteStream } from "fs";
 import { randomBytes, randomInt } from "crypto";
-const rows = 1000;
+const rows = parseInt(process.env.NUMBER_OF_RECORDS || '100');
 const filename = "./input.json";
 let has_comments = true;
 function GenerateData() {
