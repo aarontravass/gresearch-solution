@@ -4,10 +4,11 @@ import { createWriteStream } from "fs";
 
 const outputJsonPath = "./reduced_output.json";
 
+// this writer function creates a write stream to the output JSON
 function Writer() {
   this.writeStream = createWriteStream(outputJsonPath, {
     encoding: "utf-8",
-    flags: "a",
+    flags: "a", // the flag 'a' means the data should be appended
   });
   this._write = (chunk) => {
     this.writeStream.write(chunk);
@@ -16,7 +17,7 @@ function Writer() {
     this.writeStream.close();
   };
 }
-
+// the reduce function takes a start and end object and creates a single object 
 const reduce = (start_object, end_object) => {
   const result = {};
   result["session_id"] = start_object.id;
@@ -30,16 +31,19 @@ const reduce = (start_object, end_object) => {
   result["damaged"] = Boolean(end_object.comments).valueOf();
   return result;
 };
-
+// main app function
 function app() {
   const inputJsonPath = "./input.json";
 
+  // the read stream creates a stream of json data from the input path
   const pipeline = createReadStream(inputJsonPath).pipe(
     streamjson.withParser()
   );
   const writer = new Writer();
+  // the time function in console is used for timing purposes
   console.time("timer_2");
   let lastobject = null;
+  // the event 'data' means whenever a chunk of json is read, it will pass this chunk to the call back function
   pipeline.on("data", (chunk) => {
     if (!lastobject) {
       lastobject = chunk.value;
