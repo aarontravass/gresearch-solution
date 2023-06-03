@@ -1,0 +1,33 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: stream-reducer
+  namespace: aaron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stream-reducer
+  template:
+    metadata:
+      labels:
+        app: stream-reducer
+    spec:
+      containers:
+        - name: stream-reducer
+          image: ghcr.io/aarontravass/stream-reducer/app:latest
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/os: linux
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
