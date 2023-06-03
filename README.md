@@ -8,12 +8,12 @@ To package the application, I used docker. I also set up a Kubernetes deployment
 
 For building and running, a github actions workflow file has been set up. 
 
-I also had to prove that the heap usage for a given `input.json` file is independent of the number of rows of JSON and for that I set up profilling. Experimentation was done to prove the relationship between heap and number of rows was independent. 
+I also had to prove that the heap usage for a given `input.json` file is independent of the number of rows of JSON and for that I set up profiling. Experimentation was done to prove the relationship between heap and number of rows was independent. 
 
 I also created a script that would output the rows to a redis instance (docker compose) but unfortunately the nodejs script would [terminate due to memory issues](https://github.com/aarontravass/gresearch-solution/actions/runs/5162402075/jobs/9300074439#step:8:1) for `10000000` rows of JSON. Github actions ubuntu runner has only 7GB of memory available and when I tried to use [large runners with more memory](https://docs.github.com/en/actions/using-github-hosted-runners/using-larger-runners) the job [didn't get picked up](https://github.com/aarontravass/gresearch-solution/actions/runs/5162364007) since large runners are only available for enterprise users. I would expect the redis script to be at least 40-50% faster.
 
 ## Implementation
-[NodeJS streams](https://nodejs.org/api/stream.html) are a convenient way to work with streams of data since they do not depend upon the amount of data. The data can be manipulated on the go. By creating a file stream, the file can be arbitrarily large and there would little to no memory footprint. NodeJS streams are also buffered. This prevents excessive file system calls. Once the buffer is full, Nodejs automatically flushes the buffer.
+[NodeJS streams](https://nodejs.org/api/stream.html) are a convenient way to work with streams of data since they do not depend upon the amount of data. The data can be manipulated on the go. By creating a file stream, the file can be arbitrarily large and there would be little to no memory footprint. NodeJS streams are also buffered. This prevents excessive file system calls. Once the buffer is full, Nodejs automatically flushes the buffer.
 
 Each line in a file is read as a chunk of data and this needs to be assembled into something meaningful. I opted to use the npm module [`stream-json`](https://github.com/uhop/stream-json) and it contains a convenient module called `StreamArray` that converts a JSON array file into JSON chunks. The original file stream is piped through this `StreamArray` module which assembles chunks into meaningful data. I then collected 2 contiguous chunks and passed them into a reducer function called `reduce` that would give the required output JSON. This reduced chunk is then streamed back into an output json file.
 
@@ -55,13 +55,13 @@ The graph shows memory usage is minimal and not dependent on input.
 ## Future Work
 ### Challenges involved
 1. I spent a significant amount of time researching the best way to handle large data. Blogs and Stackoverflow were particularly helpful.
-2. The rest of my time was spent juggling between runing the code on my local windows machine and the linux codespace since windows notoriously tends to have memory issues. It becomes worse when docker is used which hampers my productivity.
+2. The rest of my time was spent juggling between running the code on my local windows machine and the linux codespace since windows notoriously tends to have memory issues. It becomes worse when docker is used which hampers my productivity.
 
 ### Comments
-* This challenges was very interesting. I decided to approach this from an infrastructural point of view. Hence I set up NodeJS streams, kubernetes, docker and redis. 
+* This challenge was very interesting. I decided to approach this from an infrastructural point of view. Hence, I set up NodeJS streams, kubernetes, docker and redis. 
 * I would love to test my solution with very large JSON files (on the order of GBs or TBs) to see how my script would perform
 * `src/index.js` is the main file which processes the data.
 * `generator/generator.js` is the file which generates a json file
 * `manifest/stream-reducer.yml` is the K8 manifest file
-* the JSON provided in the pdf seemed to be incorrect. Hence I modified it and saved it under `correct_json.json`
-* I noticed that the time taken to process is nearly 4 minutes for a million rows. This time can be reduced if the set up is distributed as 2 worker pods that listen to the stream and process the data.
+* The JSON provided in the pdf seemed to be incorrect. Hence I modified it and saved it under `correct_json.json`
+* I noticed that the time taken to process is nearly 4 minutes for a million rows. This time can be reduced if the setup is distributed as 2 worker pods that listen to the stream and process the data.
