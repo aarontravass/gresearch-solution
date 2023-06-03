@@ -9,7 +9,7 @@ on:
 
 env:
   K8_AVAILABLE: false
-  NUMBER_OF_RECORDS: 100000
+  NUMBER_OF_RECORDS: 10000000
 
 jobs:
   build:

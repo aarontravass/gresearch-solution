@@ -1,6 +1,9 @@
 import { createWriteStream } from "fs";
 import { randomBytes, randomInt } from "crypto";
+import {config} from "dotenv";
+config();
 const rows = parseInt(process.env.NUMBER_OF_RECORDS || '100');
+console.log("No of rows to generate: ", rows)
 const filename = "./input.json";
 let has_comments = true;
 function GenerateData() {
@@ -30,6 +33,9 @@ function GenerateData() {
 function write() {
   const stream = createWriteStream(filename, { flags: "a", encoding: "utf-8" });
   for (let i = 0; i < rows; i++) {
+    if(i%100000==0){
+      console.log("Wrote ", i, " rows");
+    }
     let str = "";
     if (i == 0) {
       str += "[\n";
