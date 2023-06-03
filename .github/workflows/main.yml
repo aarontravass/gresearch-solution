@@ -26,7 +26,7 @@ jobs:
         run: npm install
 
       - name: remove existing input.json
-        run: test -e ./input.json && echo file exists || rm ./input.json
+        run: test -e ./input.json && rm ./input.json || echo file does not exist
       
       - name: generate input data
         run: node ./generator/generator.js
